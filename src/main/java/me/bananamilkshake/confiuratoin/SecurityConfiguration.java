@@ -38,11 +38,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http
 			.authenticationProvider(authenticationProvider())
-				.authorizeRequests()
+			.authorizeRequests()
 				.antMatchers("/**").hasAnyAuthority("ROLE_USER")
 				.and()
 			.csrf()
-				.disable()
+				.disable()	// disable to perform logout without csrf token
 			.formLogin()
 				.permitAll()
 				.and()

@@ -40,5 +40,4 @@ public class ContainerLogoutHandler implements LogoutHandler {
 			log.warn("Exception happened on logout from application server", exception);
 		}
 	}
-
 }

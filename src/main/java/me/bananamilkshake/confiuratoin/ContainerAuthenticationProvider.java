@@ -41,16 +41,21 @@ public class ContainerAuthenticationProvider implements AuthenticationProvider {
 
 	@Override
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-		
+
 		UsernamePasswordAuthenticationToken authToken = (UsernamePasswordAuthenticationToken) authentication;
+
+		// HttpServletRequest object is obtained to perform authentication with application server
 		HttpServletRequest request = getHttpServletRequest();
 
 		final String username = authToken.getPrincipal().toString();
 		final String password = authToken.getCredentials().toString();
-		
+
 		try {
+			// Trying to authenticate user with application server
 			request.login(username, password);
 		} catch (ServletException exception) {
+			// If there is no user with such credentials throw an exception
+			// and Spring will try another AuthenticationProvider provider
 			throw new BadCredentialsException("Login with application server failed", exception);
 		}
 
@@ -60,6 +65,8 @@ public class ContainerAuthenticationProvider implements AuthenticationProvider {
 			return new UsernamePasswordAuthenticationToken(user, password, user.getAuthorities());
 		} catch (Exception exception) {
 			try {
+				// If any error occured logout user from application server to be able
+				// to use correct user later
 				request.logout();
 			} catch (ServletException logoutException) {
 				log.warn("HttpServletRequest.logout() failed", logoutException);
